@@ -16,7 +16,7 @@ Quickstart
 `pip3 install -r requirements.txt`
 
 * Run `main.py`:
-`python main.py`
+`python3 main.py`
 
 Demo (VictorMono font)
 ----
