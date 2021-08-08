@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import docutils
-
 import docutils.nodes
 import docutils.parsers.rst
 import docutils.utils
@@ -21,12 +20,6 @@ CSS = """.card {
 }
 """
 
-def walk(path):
-    for p in Path(path).iterdir():
-        if p.is_dir():
-            continue
-        yield p.resolve()
-
 anki_model = genanki.Model(
     1607392319,
     'Basic Model',
@@ -44,7 +37,6 @@ anki_model = genanki.Model(
     ],
     css=CSS,
 )
-
 
 anki_model_cloze = genanki.Model(
     998877661,
@@ -64,9 +56,15 @@ anki_model_cloze = genanki.Model(
     css=CSS,
     model_type=genanki.Model.CLOZE)
 
-
 headers = {
     'headers': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:51.0) Gecko/20100101 Firefox/51.0'}
+
+
+def walk(path):
+    for p in Path(path).iterdir():
+        if p.is_dir():
+            continue
+        yield p.resolve()
 
 
 def parse_rst(input_file: str) -> docutils.nodes.document:
@@ -90,7 +88,6 @@ def generate_apkg(file_name):
 
     # DUMMY parsing (probably exist better method just to parse this into html)
     document = parse_rst(f'{file_name}.rst')
-    notes = []
     media_files = []
     for i, note in enumerate(document):
         section = {
@@ -135,9 +132,9 @@ def generate_apkg(file_name):
                 else:
                     section[active_section].append(f'<p>{element_text}</p>')
 
-        if section['type'] == 'basic':
-            model = anki_model
-        else:
+        model = anki_model
+
+        if section['type'] == 'cloze':
             model = anki_model_cloze
 
         my_note = genanki.Note(
@@ -150,6 +147,7 @@ def generate_apkg(file_name):
 
         my_deck.add_note(my_note)
         media_files += section['media_files']
+
     my_package = genanki.Package(my_deck)
     my_package.media_files = list(set(media_files))
     my_package.write_to_file(f'{file_name}.apkg')
