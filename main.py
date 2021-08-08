@@ -114,12 +114,17 @@ def generate_apkg(file_name):
                 section['media_tags'].append(
                     f'<img src="{children.attributes["uri"].replace("img/", "")}" alt="{children.attributes["alt"]}">'
                 )
-            elif children.tagname == 'bullet_list':
+            elif children.tagname in ('bullet_list', 'enumerated_list'):
+                if children.tagname == 'enumerated_list':
+                    list_tag = 'ol'
+                else:
+                    list_tag = 'ul'
+
                 list_items = []
                 for list_item in children.children:
                     list_items.append(f'<li>{list_item.astext()}</li>')
                 section[active_section].append(
-                    f'<ul>{"".join(list_items)}</ul>'
+                    f'<{list_tag}>{"".join(list_items)}</{list_tag}>'
                 )
 
             elif children.tagname == 'paragraph':
