@@ -114,24 +114,16 @@ def generate_apkg(file_name):
                 section['media_tags'].append(
                     f'<img src="{children.attributes["uri"].replace("img/", "")}" alt="{children.attributes["alt"]}">'
                 )
+            elif children.tagname == 'bullet_list':
+                list_items = []
+                for list_item in children.children:
+                    list_items.append(f'<li>{list_item.astext()}</li>')
+                section[active_section].append(
+                    f'<ul>{"".join(list_items)}</ul>'
+                )
+
             elif children.tagname == 'paragraph':
-                element_text = children.astext()
-                if '{{' in element_text:
-                    section['type'] = 'cloze'
-
-                # Generate urls if needed
-                if element_text.startswith('http'):
-                    url_document = requests.get(element_text, headers=headers)
-                    url_document_text = url_document.text
-                    url_document_title = url_document_text[
-                                         url_document_text.find('<title>') + 7:
-                                         url_document_text.find('</title>')]
-
-                    section[active_section].append(f'<p><a href="{element_text}">'
-                                                   f'{url_document_title or element_text}'
-                                                   f'</a></p>')
-                else:
-                    section[active_section].append(f'<p>{element_text}</p>')
+                section = parse_paragraph(active_section, children, section)
 
         model = anki_model
 
@@ -152,6 +144,27 @@ def generate_apkg(file_name):
     my_package = genanki.Package(my_deck)
     my_package.media_files = list(set(media_files))
     my_package.write_to_file(f'{file_name}.apkg')
+
+
+def parse_paragraph(active_section, children, section):
+    element_text = children.astext()
+    if '{{' in element_text:
+        section['type'] = 'cloze'
+    # Generate urls if needed
+    if element_text.startswith('http'):
+        url_document = requests.get(element_text, headers=headers)
+        url_document_text = url_document.text
+        url_document_title = url_document_text[
+                             url_document_text.find('<title>') + 7:
+                             url_document_text.find('</title>')]
+
+        section[active_section].append(f'<p><a href="{element_text}">'
+                                       f'{url_document_title or element_text}'
+                                       f'</a></p>')
+    else:
+        section[active_section].append(f'<p>{element_text}</p>')
+
+    return section
 
 
 def generate_apkgs():
