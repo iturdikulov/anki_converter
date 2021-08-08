@@ -61,6 +61,7 @@ headers = {
 
 
 def walk(path):
+    # traverse all files from current directory
     for p in Path(path).iterdir():
         if p.is_dir():
             continue
@@ -154,7 +155,7 @@ def generate_apkg(file_name):
 
 
 def generate_apkgs():
-    # recursively traverse all files from current directory
+    # Generate packages from *.rst files
     for p in walk(Path('.')):
         if p.suffix == '.rst' and p.stem != 'README':
             generate_apkg(p.stem)
