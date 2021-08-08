@@ -9,7 +9,7 @@ I use predefined models such as:
 
 Source to generate notes in `conpendium.rst`
 
-Quickstart:
+Quickstart
 -----------
 
 * Install dependencies:
@@ -18,4 +18,15 @@ Quickstart:
 * Run `main.py`:
 `python main.py`
 
+Demo
+----
+Question
+
+.. image:: img/screen_example_1.png
+    :width: 800
+
+Answer
+
+.. image:: img/screen_example_2.png
+    :width: 800
 
