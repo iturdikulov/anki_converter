@@ -18,7 +18,7 @@ Quickstart
 * Run `main.py`:
 `python main.py`
 
-Demo
+Demo (VictorMono font)
 ----
 Question
 
