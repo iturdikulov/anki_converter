@@ -1,5 +1,5 @@
-Convert RST to Anki
-===================
+Convert RST to Anki apkg
+========================
 
 This is simple RST2Anki converter.
 I use predefined models such as:
