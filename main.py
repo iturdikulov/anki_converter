@@ -69,9 +69,7 @@ def walk(path):
 
 
 def parse_rst(input_file: str) -> docutils.nodes.document:
-    with open(input_file) as conpendium_file:
-        text = conpendium_file.read()
-
+    text = Path(input_file).read_text()
     parser = docutils.parsers.rst.Parser()
     components = (docutils.parsers.rst.Parser,)
     settings = docutils.frontend.OptionParser(
@@ -115,14 +113,11 @@ def generate_apkg(file_name):
                     f'<img src="{children.attributes["uri"].replace("img/", "")}" alt="{children.attributes["alt"]}">'
                 )
             elif children.tagname in ('bullet_list', 'enumerated_list'):
-                if children.tagname == 'enumerated_list':
-                    list_tag = 'ol'
-                else:
-                    list_tag = 'ul'
-
-                list_items = []
-                for list_item in children.children:
-                    list_items.append(f'<li>{list_item.astext()}</li>')
+                list_tag = 'ol' if children.tagname == 'enumerated_list' else 'ul'
+                list_items = [
+                    f'<li>{list_item.astext()}</li>'
+                    for list_item in children.children
+                ]
                 section[active_section].append(
                     f'<{list_tag}>{"".join(list_items)}</{list_tag}>'
                 )
